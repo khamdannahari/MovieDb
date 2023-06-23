@@ -8,5 +8,5 @@ interface MovieUseCase {
     suspend fun getMovies(page: Int, genreIds: List<Int>): Flow<MoviesModel>
     suspend fun getMovieDetail(id: Int): Flow<MovieDetailModel>
     suspend fun getVideos(id: Int): Flow<VideosModel>
-    suspend fun getReviews(id: Int): Flow<ReviewsModel>
+    suspend fun getReviews(id: Int, page: Int): Flow<ReviewsModel>
 }

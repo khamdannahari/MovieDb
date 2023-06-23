@@ -1,68 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/movieDetailFragmentLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/loadingPb"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/movieDetailFragmentLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
-        android:padding="100dp"
-        tools:visibility="gone" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/titleTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@color/white"
-        android:ellipsize="end"
-        android:maxHeight="100dp"
-        android:maxLines="2"
-        android:padding="16dp"
-        android:paddingHorizontal="16dp"
-        android:textColor="@color/teal_700"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        tools:text="Title" />
+        android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/descTv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:ellipsize="end"
-        android:maxHeight="100dp"
-        android:maxLines="3"
-        android:padding="16dp"
-        android:paddingHorizontal="16dp"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        tools:text="Desc" />
+        <ProgressBar
+            android:id="@+id/loadingPb"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:padding="100dp"
+            tools:visibility="gone" />
 
-    <FrameLayout
-        android:id="@+id/trailerFl"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/errorTv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center"
+            android:text="@string/error_fetching_data"
+            tools:visibility="gone" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+        <FrameLayout
+            android:id="@+id/trailerFl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:layout_height="300dp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/white"
+            android:ellipsize="end"
+            android:maxHeight="100dp"
+            android:maxLines="2"
+            android:textColor="@color/teal_700"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:text="Title" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/descTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/white"
+            android:ellipsize="end"
+            android:maxHeight="100dp"
+            android:maxLines="3"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:text="Desc" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="4dp"
+            android:text="@string/review"
+            android:textColor="@color/teal_700"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reviewsRv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="16dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_review" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/noReviewsTv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/no_reviews" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/backFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:paddingHorizontal="16dp"
-        android:text="@string/review"
-        android:textColor="@color/teal_700" />
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_arrow_left"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
-    <ListView
-        android:id="@+id/reviewLv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="16dp" />
-
-</androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.constraintlayout.widget.ConstraintLayout>

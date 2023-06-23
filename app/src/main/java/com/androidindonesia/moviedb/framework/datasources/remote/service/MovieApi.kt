@@ -28,7 +28,8 @@ interface MovieApi {
 
     @GET(REVIEWS)
     suspend fun getReviews(
-        @Path(ID) id: Int
+        @Path(ID) id: Int,
+        @Query(PAGE) page: Int
     ): ReviewsResponse
 
     private companion object {

@@ -8,4 +8,6 @@
     <string name="ok">OK</string>
     <string name="error_fetching_data">Error Fetching Data</string>
     <string name="review">Review</string>
+    <string name="no_reviews">No Reviews</string>
+    <string name="detail">Detail</string>
 </resources>

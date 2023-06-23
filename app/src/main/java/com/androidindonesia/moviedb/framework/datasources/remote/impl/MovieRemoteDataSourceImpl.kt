@@ -22,7 +22,7 @@ class MovieRemoteDataSourceImpl @Inject constructor(
     override suspend fun getVideos(id: Int): VideosModel =
         api.getVideos(id).asModel
 
-    override suspend fun getReviews(id: Int): ReviewsModel =
-        api.getReviews(id).asModel
+    override suspend fun getReviews(id: Int, page: Int): ReviewsModel =
+        api.getReviews(id, page).asModel
 
 }

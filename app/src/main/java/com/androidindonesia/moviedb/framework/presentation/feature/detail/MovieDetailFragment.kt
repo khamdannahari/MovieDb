@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.androidindonesia.moviedb.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.androidindonesia.moviedb.databinding.FragmentMovieDetailBinding
 import com.androidindonesia.moviedb.framework.presentation.util.DataState
+import com.androidindonesia.moviedb.framework.presentation.util.PaginationController
+import com.androidindonesia.moviedb.framework.presentation.util.PaginationDataState
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -30,9 +32,18 @@ class MovieDetailFragment : Fragment() {
 
     private val args: MovieDetailFragmentArgs by navArgs()
 
+    private val paginationController by lazy {
+        PaginationController()
+    }
+
+    private val reviewsAdapter by lazy {
+        ReviewsAdapter()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel.getDetails(args.id)
+        viewModel.getReviews(args.id)
     }
 
     override fun onCreateView(
@@ -46,64 +57,75 @@ class MovieDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setBackFab()
         observeDetails()
+        observeReviews()
+        setupReviewsRv()
+    }
+
+    private fun setBackFab() {
+        binding.backFab.setOnClickListener { findNavController().navigateUp() }
     }
 
     private fun observeDetails() {
-        viewModel.movieDetailDataState.observe(viewLifecycleOwner) {
+        viewModel.detailDataState.observe(viewLifecycleOwner) {
             when (it) {
                 is DataState.Loading -> {
                     binding.loadingPb.isVisible = true
+                    binding.errorTv.isVisible = false
                 }
                 is DataState.Success -> {
                     binding.loadingPb.isVisible = false
-                    binding.titleTv.text = it.data.title
-                    binding.descTv.text = it.data.overview
-                }
-                is DataState.Failure -> {
-                    binding.loadingPb.isVisible = false
-                    Toast.makeText(requireContext(), it.throwable.message, Toast.LENGTH_SHORT)
-                        .show()
-                }
-            }
-        }
+                    binding.errorTv.isVisible = false
+                    binding.titleTv.text = it.data.first.title
+                    binding.descTv.text = it.data.first.overview
 
-        viewModel.videosDataState.observe(viewLifecycleOwner) {
-            when (it) {
-                is DataState.Loading -> Unit
-                is DataState.Success -> {
-                    val videoId = it.data.results.find { it.isYoutubeSite }?.key.orEmpty()
+                    val videoId = it.data.second.results.find { it.isYoutubeSite }?.key.orEmpty()
                     binding.trailerFl.initYouTubePlayer(videoId)
                 }
                 is DataState.Failure -> {
+                    binding.loadingPb.isVisible = false
+                    binding.errorTv.isVisible = true
                     Toast.makeText(requireContext(), it.throwable.message, Toast.LENGTH_SHORT)
                         .show()
                 }
             }
         }
+    }
 
+    private fun observeReviews() {
         viewModel.reviewsDataState.observe(viewLifecycleOwner) {
             when (it) {
-                is DataState.Loading -> Unit
-                is DataState.Success -> {
-                    val adapter: ArrayAdapter<String> =
-                        ArrayAdapter<String>(
-                            requireContext(),
-                            R.layout.item_review,
-                            it.data.results.map { result ->
-                                result.author
-                                    .plus(NEW_LINE)
-                                    .plus(result.content)
-                                    .plus(NEW_LINE)
-                                    .plus(NEW_LINE)
-                            }
-                        )
-
-                    binding.reviewLv.adapter = adapter
+                is PaginationDataState.First -> {
+                    paginationController.resetPageNumber()
+                    paginationController.isLastPage(false)
+                    reviewsAdapter.submitList(it.data)
                 }
-                is DataState.Failure -> {
+                is PaginationDataState.Append -> {
+                    reviewsAdapter.submitList(reviewsAdapter.currentList.plus(it.data))
+                }
+                is PaginationDataState.Failure -> {
                     Toast.makeText(requireContext(), it.throwable.message, Toast.LENGTH_SHORT)
                         .show()
+                }
+                PaginationDataState.FirstLoading -> Unit
+                PaginationDataState.PaginationEnded -> paginationController.isLastPage(true)
+                PaginationDataState.PaginationLoading -> paginationController.isLoading(true)
+            }
+
+            binding.reviewsRv.isVisible = reviewsAdapter.itemCount > 0
+            binding.noReviewsTv.isVisible = reviewsAdapter.itemCount <= 0
+        }
+    }
+
+    private fun setupReviewsRv() = with(binding.reviewsRv) {
+        adapter = reviewsAdapter
+        layoutManager.apply {
+            if (this is LinearLayoutManager) {
+                paginationController.setLayoutManager(this)
+                binding.reviewsRv.addOnScrollListener(paginationController)
+                paginationController.onLoadMoreItems { page ->
+                    viewModel.getReviews(args.id, page)
                 }
             }
         }
@@ -127,12 +149,12 @@ class MovieDetailFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        paginationController.clean()
+        binding.reviewsRv.adapter = null
+        binding.reviewsRv.layoutManager = null
         super.onDestroyView()
         _binding = null
     }
 
-    private companion object {
-        const val NEW_LINE = "\n"
-    }
 }
 

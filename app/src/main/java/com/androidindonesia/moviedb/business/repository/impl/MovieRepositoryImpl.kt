@@ -29,8 +29,8 @@ class MovieRepositoryImpl @Inject constructor(
         emit(movieRemoteDataSource.getVideos(id))
     }.flowOn(IO)
 
-    override suspend fun getReviews(id: Int): Flow<ReviewsModel> = flow {
-        emit(movieRemoteDataSource.getReviews(id))
+    override suspend fun getReviews(id: Int, page: Int): Flow<ReviewsModel> = flow {
+        emit(movieRemoteDataSource.getReviews(id, page))
     }.flowOn(IO)
 
 }

@@ -14,7 +14,7 @@ val MoviesResponse.asModel: MoviesModel
 
 private val MovieItemResponse.asModel: MovieItemModel
     get() = MovieItemModel(
-        originalTitle = originalTitle.orEmpty(),
+        title = title.orEmpty(),
         posterPath = posterPath.orEmpty(),
         id = id.orZero(),
     )
@@ -54,7 +54,9 @@ private val VideoResultResponse.asModel: VideoResultModel
 val ReviewsResponse.asModel: ReviewsModel
     get() = ReviewsModel(
         id = id.orZero(),
-        results = results?.map { it.asModel }.orEmpty()
+        results = results?.map { it.asModel }.orEmpty(),
+        page = page.orZero(),
+        totalPages = totalPages.orZero()
     )
 
 private val ReviewResultResponse.asModel: ReviewResultModel

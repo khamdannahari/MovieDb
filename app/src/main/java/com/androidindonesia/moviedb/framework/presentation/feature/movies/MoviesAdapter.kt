@@ -28,7 +28,7 @@ class MoviesAdapter(
 
         fun bind(movie: MovieItemModel) {
             binding.photoIv.loadMovieImage(movie.posterPath)
-            binding.titleTv.text = movie.originalTitle
+            binding.titleTv.text = movie.title
             binding.root.setOnClickListener {
                 onClick.invoke(movie)
             }

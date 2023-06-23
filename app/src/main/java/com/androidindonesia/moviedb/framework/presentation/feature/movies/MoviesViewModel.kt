@@ -50,7 +50,7 @@ class MoviesViewModel @Inject constructor(private val useCase: MovieUseCase) : V
                 .catch { _moviesDataState.value = PaginationDataState.Failure(it) }
                 .collect {
                     when (it.page) {
-                        it.totalPages ->
+                        it.totalPages.inc() ->
                             _moviesDataState.value = PaginationDataState.PaginationEnded
                         FIRST_PAGE -> _moviesDataState.value = PaginationDataState.First(it.results)
                         else -> _moviesDataState.value = PaginationDataState.Append(it.results)

@@ -52,7 +52,7 @@ class MoviesFragment : Fragment() {
 
         setupSwipeRefreshListener()
         setupFilterIv()
-        setupMovieRv()
+        setupMoviesRv()
         observeMovies()
     }
 
@@ -66,18 +66,16 @@ class MoviesFragment : Fragment() {
 
     private fun setupFilterIv() {
         binding.filterIv.setOnClickListener {
-            findNavController().navigate(
-                MoviesFragmentDirections.openGenreDialog()
-            )
+            findNavController().navigate(MoviesFragmentDirections.openGenreDialog())
         }
     }
 
-    private fun setupMovieRv() = with(binding.movieRv) {
+    private fun setupMoviesRv() = with(binding.moviesRv) {
         adapter = moviesAdapter
         layoutManager.apply {
             if (this is LinearLayoutManager) {
                 paginationController.setLayoutManager(this)
-                binding.movieRv.addOnScrollListener(paginationController)
+                binding.moviesRv.addOnScrollListener(paginationController)
                 paginationController.onLoadMoreItems { page ->
                     viewModel.getMovies(page)
                 }
@@ -119,8 +117,8 @@ class MoviesFragment : Fragment() {
 
     override fun onDestroyView() {
         paginationController.clean()
-        binding.movieRv.adapter = null
-        binding.movieRv.layoutManager = null
+        binding.moviesRv.adapter = null
+        binding.moviesRv.layoutManager = null
         super.onDestroyView()
         _binding = null
     }

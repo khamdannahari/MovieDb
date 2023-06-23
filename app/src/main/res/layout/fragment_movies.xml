@@ -36,7 +36,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/movieRv"
+            android:id="@+id/movies_rv"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/white"

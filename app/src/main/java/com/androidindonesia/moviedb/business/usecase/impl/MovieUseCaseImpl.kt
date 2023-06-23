@@ -22,7 +22,7 @@ class MovieUseCaseImpl @Inject constructor(
     override suspend fun getVideos(id: Int): Flow<VideosModel> =
         repository.getVideos(id)
 
-    override suspend fun getReviews(id: Int): Flow<ReviewsModel> =
-        repository.getReviews(id)
+    override suspend fun getReviews(id: Int, page: Int): Flow<ReviewsModel> =
+        repository.getReviews(id, page)
 
 }
