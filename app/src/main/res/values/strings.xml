@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">MovieDb</string>
+    <string name="movies">Movies</string>
+    <string name="info">Info</string>
+    <string name="title">Discover Movies</string>
+    <string name="name">Candidate:\nKhamdan Nahari\nAndroid Developer</string>
+    <string name="genres">Genres</string>
+    <string name="ok">OK</string>
+    <string name="error_fetching_data">Error Fetching Data</string>
+</resources>

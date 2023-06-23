@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation_graph"
+    app:startDestination="@id/moviesFragment">
+
+    <fragment
+        android:id="@+id/moviesFragment"
+        android:name="com.androidindonesia.moviedb.framework.presentation.feature.movies.MoviesFragment"
+        android:label="MoviesFragment"
+        tools:layout="@layout/fragment_movies">
+
+        <action
+            android:id="@+id/openMovieDetail"
+            app:destination="@id/movieDetailFragment" />
+
+        <action
+            android:id="@+id/openGenreDialog"
+            app:destination="@id/genresDialogFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/movieDetailFragment"
+        android:name="com.androidindonesia.moviedb.framework.presentation.feature.detail.MovieDetailFragment"
+        android:label="MovieDetailFragment"
+        tools:layout="@layout/fragment_movie_detail">
+
+        <argument
+            android:name="id"
+            app:argType="integer"
+            app:nullable="false" />
+
+    </fragment>
+
+    <dialog
+        android:id="@+id/genresDialogFragment"
+        android:name="com.androidindonesia.moviedb.framework.presentation.feature.genre.GenresDialogFragment"
+        android:label="GenresDialogFragment"
+        tools:layout="@layout/dialog_genres">
+
+        <action
+            android:id="@+id/backToMovies"
+            app:destination="@id/moviesFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/moviesFragment"
+            app:popUpToInclusive="true" />
+
+    </dialog>
+
+    <fragment
+        android:id="@+id/infoFragment"
+        android:name="com.androidindonesia.moviedb.framework.presentation.feature.info.InfoFragment"
+        android:label="InfoFragment"
+        tools:layout="@layout/fragment_info" />
+
+</navigation>
