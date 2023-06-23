@@ -22,7 +22,7 @@ class MoviesViewModel @Inject constructor(private val useCase: MovieUseCase) : V
     val moviesDataState: LiveData<PaginationDataState<List<MovieItemModel>>> = _moviesDataState
 
     private val _genres: MutableLiveData<List<GenresItemModel>> = MutableLiveData()
-    val genres: List<GenresItemModel> = _genres.value.orEmpty()
+    val genres: List<GenresItemModel> get() = _genres.value.orEmpty()
 
     init {
         getGenres()
