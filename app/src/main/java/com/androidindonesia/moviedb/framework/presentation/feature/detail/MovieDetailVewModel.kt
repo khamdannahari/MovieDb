@@ -2,7 +2,8 @@ package com.androidindonesia.moviedb.framework.presentation.feature.detail
 
 import androidx.lifecycle.*
 import com.androidindonesia.moviedb.business.model.MovieDetailModel
-import com.androidindonesia.moviedb.business.model.VideoModel
+import com.androidindonesia.moviedb.business.model.ReviewsModel
+import com.androidindonesia.moviedb.business.model.VideosModel
 import com.androidindonesia.moviedb.business.usecase.abstraction.MovieUseCase
 import com.androidindonesia.moviedb.framework.presentation.util.DataState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,10 +21,13 @@ class MovieDetailVewModel @Inject constructor(
         MutableLiveData()
     val movieDetailDataState: LiveData<DataState<MovieDetailModel>> = _movieDetailDataState
 
-    private val _videoDataState: MutableLiveData<DataState<VideoModel>> = MutableLiveData()
-    val videoDataState: LiveData<DataState<VideoModel>> = _videoDataState
+    private val _videosDataState: MutableLiveData<DataState<VideosModel>> = MutableLiveData()
+    val videosDataState: LiveData<DataState<VideosModel>> = _videosDataState
 
-    fun getMovieDetail(id: Int) {
+    private val _reviewsDataState: MutableLiveData<DataState<ReviewsModel>> = MutableLiveData()
+    val reviewsDataState: LiveData<DataState<ReviewsModel>> = _reviewsDataState
+
+    fun getDetails(id: Int) {
         viewModelScope.launch {
             useCase.getMovieDetail(id)
                 .onStart { _movieDetailDataState.value = DataState.Loading }
@@ -32,10 +36,15 @@ class MovieDetailVewModel @Inject constructor(
                     _movieDetailDataState.value = DataState.Success(it)
                 }
 
-            useCase.getVideo(id)
-                .onStart { _videoDataState.value = DataState.Loading }
-                .catch { _videoDataState.value = DataState.Failure(it) }
-                .collect { _videoDataState.value = DataState.Success(it) }
+            useCase.getVideos(id)
+                .onStart { _videosDataState.value = DataState.Loading }
+                .catch { _videosDataState.value = DataState.Failure(it) }
+                .collect { _videosDataState.value = DataState.Success(it) }
+
+            useCase.getReviews(id)
+                .onStart { _reviewsDataState.value = DataState.Loading }
+                .catch { _reviewsDataState.value = DataState.Failure(it) }
+                .collect { _reviewsDataState.value = DataState.Success(it) }
         }
     }
 }

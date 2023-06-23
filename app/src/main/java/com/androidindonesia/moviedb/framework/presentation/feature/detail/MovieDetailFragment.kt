@@ -4,19 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import com.androidindonesia.moviedb.R
 import com.androidindonesia.moviedb.databinding.FragmentMovieDetailBinding
 import com.androidindonesia.moviedb.framework.presentation.util.DataState
-import com.androidindonesia.moviedb.framework.presentation.util.loadMovieImage
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MovieDetailFragment : Fragment() {
@@ -30,7 +32,7 @@ class MovieDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.getMovieDetail(args.id)
+        viewModel.getDetails(args.id)
     }
 
     override fun onCreateView(
@@ -44,10 +46,10 @@ class MovieDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeMovieDetail()
+        observeDetails()
     }
 
-    private fun observeMovieDetail() {
+    private fun observeDetails() {
         viewModel.movieDetailDataState.observe(viewLifecycleOwner) {
             when (it) {
                 is DataState.Loading -> {
@@ -55,7 +57,6 @@ class MovieDetailFragment : Fragment() {
                 }
                 is DataState.Success -> {
                     binding.loadingPb.isVisible = false
-                    binding.photoIv.loadMovieImage(it.data.posterPath)
                     binding.titleTv.text = it.data.title
                     binding.descTv.text = it.data.overview
                 }
@@ -67,13 +68,38 @@ class MovieDetailFragment : Fragment() {
             }
         }
 
-        viewModel.videoDataState.observe(viewLifecycleOwner) {
+        viewModel.videosDataState.observe(viewLifecycleOwner) {
             when (it) {
                 is DataState.Loading -> Unit
                 is DataState.Success -> {
-                    binding.trailerFl.initializeYouTubePlayer(
-                        it.data.results.find { it.isYoutubeSite }?.key.orEmpty()
-                    )
+                    val videoId = it.data.results.find { it.isYoutubeSite }?.key.orEmpty()
+                    binding.trailerFl.initYouTubePlayer(videoId)
+                }
+                is DataState.Failure -> {
+                    Toast.makeText(requireContext(), it.throwable.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+        }
+
+        viewModel.reviewsDataState.observe(viewLifecycleOwner) {
+            when (it) {
+                is DataState.Loading -> Unit
+                is DataState.Success -> {
+                    val adapter: ArrayAdapter<String> =
+                        ArrayAdapter<String>(
+                            requireContext(),
+                            R.layout.item_review,
+                            it.data.results.map { result ->
+                                result.author
+                                    .plus(NEW_LINE)
+                                    .plus(result.content)
+                                    .plus(NEW_LINE)
+                                    .plus(NEW_LINE)
+                            }
+                        )
+
+                    binding.reviewLv.adapter = adapter
                 }
                 is DataState.Failure -> {
                     Toast.makeText(requireContext(), it.throwable.message, Toast.LENGTH_SHORT)
@@ -83,7 +109,7 @@ class MovieDetailFragment : Fragment() {
         }
     }
 
-    private fun FrameLayout.initializeYouTubePlayer(id: String) {
+    private fun FrameLayout.initYouTubePlayer(id: String) {
         val youTubePlayerView = YouTubePlayerView(requireContext()).apply {
             layoutParams = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -105,5 +131,8 @@ class MovieDetailFragment : Fragment() {
         _binding = null
     }
 
+    private companion object {
+        const val NEW_LINE = "\n"
+    }
 }
 

@@ -2,11 +2,11 @@ package com.androidindonesia.moviedb.framework.datasources.remote.response
 
 import com.google.gson.annotations.SerializedName
 
-data class VideoResultResponse(
-    @SerializedName("site")
-    val site: String? = "",
+data class ReviewResultResponse(
     @SerializedName("id")
     val id: String? = "",
-    @SerializedName("key")
-    val key: String? = ""
+    @SerializedName("author")
+    val author: String? = "",
+    @SerializedName("content")
+    val content: String? = ""
 )

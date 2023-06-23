@@ -2,87 +2,64 @@ package com.androidindonesia.moviedb.framework.datasources.remote.mapper
 
 import com.androidindonesia.moviedb.business.model.*
 import com.androidindonesia.moviedb.framework.datasources.remote.response.*
+import com.androidindonesia.moviedb.framework.presentation.util.EmptyDefaultValue.orZero
 
 val MoviesResponse.asModel: MoviesModel
     get() = MoviesModel(
-        page = page,
-        totalPages = totalPages,
-        results = results.map { it.asModel },
-        totalResults = totalResults,
+        page = page.orZero(),
+        totalPages = totalPages.orZero(),
+        results = results?.map { it.asModel }.orEmpty(),
+        totalResults = totalResults.orZero(),
     )
 
 private val MovieItemResponse.asModel: MovieItemModel
     get() = MovieItemModel(
-        overview = overview,
-        originalLanguage = originalLanguage,
-        originalTitle = originalTitle,
-        video = video,
-        title = title,
-        genreIds = genreIds,
-        posterPath = posterPath,
-        backdropPath = backdropPath.orEmpty(),
-        releaseDate = releaseDate,
-        popularity = popularity,
-        voteAverage = voteAverage,
-        id = id,
-        adult = adult,
-        voteCount = voteCount,
+        originalTitle = originalTitle.orEmpty(),
+        posterPath = posterPath.orEmpty(),
+        id = id.orZero(),
     )
 
 val MovieDetailResponse.asModel: MovieDetailModel
     get() = MovieDetailModel(
-        originalLanguage = originalLanguage,
-        imdbId = imdbId,
-        video = video,
-        title = title,
-        backdropPath = backdropPath,
-        revenue = revenue,
-        genres = emptyList(),
-        popularity = popularity,
-        productionCountries = emptyList(),
-        id = id,
-        voteCount = voteCount,
-        budget = budget,
-        overview = overview,
-        originalTitle = originalTitle,
-        runtime = runtime,
-        posterPath = posterPath,
-        spokenLanguages = emptyList(),
-        productionCompanies = emptyList(),
-        releaseDate = releaseDate,
-        voteAverage = voteAverage,
-        tagline = tagline,
-        adult = adult,
-        homepage = homepage,
-        status = status,
+        title = title.orEmpty(),
+        id = id.orZero(),
+        overview = overview.orEmpty(),
     )
 
 val GenresResponse.asModel: GenresModel
     get() = GenresModel(
-        genres = genres.map { it.asModel }
+        genres = genres?.map { it.asModel }.orEmpty()
     )
 
 private val GenresItemResponse.asModel: GenresItemModel
     get() = GenresItemModel(
-        name = name,
-        id = id
+        name = name.orEmpty(),
+        id = id.orZero()
     )
 
-val VideoResponse.asModel: VideoModel
-    get() = VideoModel(
-        id = id,
-        results = results.map { it.asModel }
+val VideosResponse.asModel: VideosModel
+    get() = VideosModel(
+        id = id.orZero(),
+        results = results?.map { it.asModel }.orEmpty()
     )
 
 private val VideoResultResponse.asModel: VideoResultModel
     get() = VideoResultModel(
-        site = site,
-        size = size,
-        iso = iso,
-        name = name,
-        official = official,
-        id = id,
-        type = type,
-        publishedAt = publishedAt,
-        key = key
+        site = site.orEmpty(),
+        id = id.orEmpty(),
+        key = key.orEmpty()
+    )
+
+
+val ReviewsResponse.asModel: ReviewsModel
+    get() = ReviewsModel(
+        id = id.orZero(),
+        results = results?.map { it.asModel }.orEmpty()
+    )
+
+private val ReviewResultResponse.asModel: ReviewResultModel
+    get() = ReviewResultModel(
+        id = id.orEmpty(),
+        author = author.orEmpty(),
+        content = content.orEmpty()
     )

@@ -1,14 +1,14 @@
 package com.androidindonesia.moviedb.framework.datasources.remote.service
 
-import com.androidindonesia.moviedb.framework.datasources.remote.response.GenresResponse
-import com.androidindonesia.moviedb.framework.datasources.remote.response.MovieDetailResponse
-import com.androidindonesia.moviedb.framework.datasources.remote.response.MoviesResponse
-import com.androidindonesia.moviedb.framework.datasources.remote.response.VideoResponse
+import com.androidindonesia.moviedb.framework.datasources.remote.response.*
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MovieApi {
+
+    @GET(GENRES)
+    suspend fun getGenres(): GenresResponse
 
     @GET(MOVIES)
     suspend fun getMovies(
@@ -21,13 +21,15 @@ interface MovieApi {
         @Path(ID) id: Int
     ): MovieDetailResponse
 
-    @GET(VIDEO)
-    suspend fun getVideo(
+    @GET(VIDEOS)
+    suspend fun getVideos(
         @Path(ID) id: Int
-    ): VideoResponse
+    ): VideosResponse
 
-    @GET(GENRES)
-    suspend fun getGenres(): GenresResponse
+    @GET(REVIEWS)
+    suspend fun getReviews(
+        @Path(ID) id: Int
+    ): ReviewsResponse
 
     private companion object {
         // PATH
@@ -35,7 +37,8 @@ interface MovieApi {
         const val ID = "id"
         const val MOVIE = "movie/{$ID}"
         const val GENRES = "genre/movie/list"
-        const val VIDEO = "movie/{$ID}/videos"
+        const val VIDEOS = "movie/{$ID}/videos"
+        const val REVIEWS = "movie/{$ID}/reviews"
 
         // QUERY
         const val PAGE = "page"

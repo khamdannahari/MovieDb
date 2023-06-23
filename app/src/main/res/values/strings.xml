@@ -7,4 +7,5 @@
     <string name="genres">Genres</string>
     <string name="ok">OK</string>
     <string name="error_fetching_data">Error Fetching Data</string>
+    <string name="review">Review</string>
 </resources>
